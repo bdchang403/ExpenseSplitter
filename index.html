@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700|Playfair+Display:700" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <title>Expense Splitter</title>
+</head>
+<body>
+    <header>
+            <h1>Expense Splitter</h1>
+    </header>
+    <div class="column left">
+         <div class="sectionheader">
+            <img src="assets/noun_Input_2386332.png">
+            <h2 stype='display:inline;'>Input Expense</h2>
+         </div><br>
+        <form>
+             <div class="Purchase-Input">
+                <input id="purchaser" type="text" placeholder="Name of Purchaser" size="20"/>
+                <label for="Purchaser"> paid for </label><input id="item" type="text" placeholder="Purchase" size="30"/>
+                <br><label for="Cost">At a cost of </label><input id="cost" type="number" step="0.01" placeholder="$ Amount"/> 
+            </div>
+            <div class="Splitters0">
+                <label for="Purchaser">Split with: </label><input id="receiver0" type="text" placeholder="Name" size="51"/>
+                <a href="#" class="add_field">Add</a>
+            </div>
+             <div>
+                <input type="submit" id="submit" value="Submit"/>    
+            </div>
+        </form>
+        </div>        
+    </div>
+    <div class="column middle">
+        <div class="sectionheader">
+            <img src="assets/noun_transaction_112514.png">
+            <h2 stype='display:inline;'>Transaction Report</h2>
+        </div><br>
+        <ul id="transactionHistory">
+        </ul>
+    </div>
+    <div class="column right">
+        <div class="sectionheader">
+            <img src="assets/noun_Handshake_115503.png">
+            <h2 stype='display:inline;'>Settling All Debt</h2>
+        </div><br>
+        <ul id="settleup">
+        </ul>
+    </div>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="scripts.js"></script>
+</body>
+</html>
