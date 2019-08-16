@@ -1,32 +1,59 @@
 let users = [];
-let Dues = [];
+let dues = [];
+let transactionLog = [];
 let receiverCount = 1;
 
 $(document).ready(function(){
+    // If local storage exist, populate users and transaction logs
+    if (localStorage.getItem("users") != null){
+        users = JSON.parse(localStorage.getItem("users"));
+        settleAmount()
+        displayDues();
+    }
+    if (localStorage.getItem("logs") != null){
+        transactionLog = JSON.parse(localStorage.getItem("logs"));
+    }
+
+    // Display transaction log from Local Storage
+    transactionLog.forEach((transaction) => {
+        $('#transactionHistory').append(transaction);
+    });
 
     // Submitting new purchase
     $('form').on('submit', function(event){
         event.preventDefault();
         
+        // Set variables
         const nameOfPurchaser = $('#purchaser').val();
         const item = $('#item').val();
         const totalCost = parseFloat($('#cost').val());
         const cost = totalCost/(receiverCount+1).toFixed(2);
+        let tempListItem = "";
 
         // Find the purchaser. Store in user array if not found. Store transaction if found
         findUser(nameOfPurchaser, item, cost, 'self');
 
         // Display transactions and find receivers. Store user in array if not found. Store transaction if found
-        $('#transactionHistory').append(`<li>${nameOfPurchaser} had purchased ${item} for $${totalCost}`);
+        tempListItem = `<li>${nameOfPurchaser} had purchased ${item} for $${totalCost}`;
+        transactionLog.push(tempListItem);
+        $('#transactionHistory').append(tempListItem);
         for (let x =0; x < receiverCount; x++){
             const receiverName = $(`#receiver${x}`).val(); 
             findUser(receiverName, item, cost, nameOfPurchaser);
-            $('#transactionHistory').append(`${receiverName} owes $${cost.toFixed(2)}<br>`);
+            tempListItem = `${receiverName} owes $${cost.toFixed(2)}<br>`
+            transactionLog.push(tempListItem);
+            $('#transactionHistory').append(tempListItem);
         }  
-        $('#transactionHistory').append(`</li>`);
+        tempListItem = `</li>`;
+        transactionLog.push(tempListItem);
+        $('#transactionHistory').append(tempListItem);
+
+        // Store values in the local Storage
+        localStorage.setItem("users", JSON.stringify(users));
+        localStorage.setItem("logs", JSON.stringify(transactionLog));
 
         // Display settle up
-        SettleAmount()
+        settleAmount()
         displayDues();
 
         // Clean up input fields
@@ -47,6 +74,14 @@ $(document).ready(function(){
             $(this).parent('div').remove();
             receiverCount --;
         }
+    })
+
+    // Clear page and local storage
+    $('form').on('click','.clearStorage', function(event){
+        window.localStorage.clear();
+        users = [];
+        transactionLog = [];
+        location.reload();
     })
 
     // Find if user exist in the users array. If not, create a new person
@@ -82,9 +117,9 @@ $(document).ready(function(){
         users.push(newPerson);
     }
 
-    // Analyze owe back and store information in the Dues array
-    function SettleAmount(){
-        Dues = [];
+    // Analyze owe back and store information in the dues array
+    function settleAmount(){
+        dues = [];
         users.forEach((personA) => {
             users.forEach((personB) => {
                 let personASum = 0;
@@ -101,22 +136,22 @@ $(document).ready(function(){
                         newBalance.push(personB.name);
                         newBalance.push(personA.name);
                         newBalance.push((personBSum-personASum).toFixed(2));
-                        Dues.push(newBalance);
+                        dues.push(newBalance);
                     }
                 }   
             });
         });
     }  
 
-    // Display Dues in the "Settle All Debt" section
+    // Display dues in the "Settle All Debt" section
     function displayDues(){
         let dataAnalysis = [];
         // Deinitialize the data table by tearing it
         if ($.fn.DataTable.isDataTable("#settleup")) {
             $('#settleup').DataTable().clear().destroy();
         } 
-        // Copy the Dues table to avoid corrupting from the above destroy function
-        Dues.forEach((item) => {
+        // Copy the dues table to avoid corrupting from the above destroy function
+        dues.forEach((item) => {
             dataAnalysis.push(item);
         });
         // Initialize the DataTable
@@ -129,5 +164,4 @@ $(document).ready(function(){
             ]
         });
     }
-
 });
