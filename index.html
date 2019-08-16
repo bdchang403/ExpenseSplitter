@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700|Playfair+Display:700" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="style.css">
     <title>Expense Splitter</title>
 </head>
@@ -15,7 +16,7 @@
     <div class="column left">
          <div class="sectionheader">
             <img src="assets/noun_Input_2386332.png">
-            <h2 stype='display:inline;'>Input Expense</h2>
+            <h2 stype='display:inline;'>Input Expenses</h2>
          </div><br>
         <form>
              <div class="Purchase-Input">
@@ -44,13 +45,14 @@
     <div class="column right">
         <div class="sectionheader">
             <img src="assets/noun_Handshake_115503.png">
-            <h2 stype='display:inline;'>Settling All Debt</h2>
+            <h2 stype='display:inline;'>Settle Up</h2>
         </div><br>
-        <ul id="settleup">
-        </ul>
+        <table id="settleup" class="display" width="100%"></table>
     </div>
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="scripts.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script> 
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 </body>
 </html>

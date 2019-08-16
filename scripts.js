@@ -7,6 +7,7 @@ $(document).ready(function(){
     // Submitting new purchase
     $('form').on('submit', function(event){
         event.preventDefault();
+        
         const nameOfPurchaser = $('#purchaser').val();
         const item = $('#item').val();
         const totalCost = parseFloat($('#cost').val());
@@ -50,14 +51,14 @@ $(document).ready(function(){
 
     // Find if user exist in the users array. If not, create a new person
     function findUser(name, item, cost, Purchaser) {
-        if(users.find(person => person.name === name)){
-            users.filter((person) => {
-                if (person.name === name) {
+        if(users.find((person) => person.name === name)){
+            users.filter((personSearched) => {
+                if (personSearched.name === name) {
                     const newPurchase = {item:'', Purchaser:'', cost:''}
                     newPurchase.item = item;
                     newPurchase.cost = cost;
                     newPurchase.Purchaser = Purchaser;
-                    person.owing.push(newPurchase);
+                    personSearched.owing.push(newPurchase);
                 }
             })
         }
@@ -88,18 +89,18 @@ $(document).ready(function(){
             users.forEach((personB) => {
                 let personASum = 0;
                 let personBSum = 0;
-                const newBalance = {ower:'', amount:'', receiver:''};
+                const newBalance = [];
                 personA.owing.filter(item => item.Purchaser === personB.name).forEach(lineItem => {
-                    personASum = personASum + parseFloat(lineItem.cost).toFixed(2);
+                    personASum = personASum + parseFloat(lineItem.cost);
                 })
                 personB.owing.filter(item => item.Purchaser === personA.name).forEach(lineItem => {
-                    personBSum = personBSum + parseFloat(lineItem.cost).toFixed(2);
+                    personBSum = personBSum + parseFloat(lineItem.cost);
                 })
                 if (personASum !== 0 || personBSum !== 0){
                      if (personASum < personBSum) { 
-                        newBalance.ower = personB.name;
-                        newBalance.amount = personBSum-personASum;
-                        newBalance.receiver = personA.name;
+                        newBalance.push(personB.name);
+                        newBalance.push(personA.name);
+                        newBalance.push((personBSum-personASum).toFixed(2));
                         Dues.push(newBalance);
                     }
                 }   
@@ -109,10 +110,24 @@ $(document).ready(function(){
 
     // Display Dues in the "Settle All Debt" section
     function displayDues(){
-        $('#settleup').empty();
-        Dues.forEach((balance) => {
-            $('#settleup').append(`<li>${balance.ower} owes $${balance.amount} to ${balance.receiver}</li>`);
-        })
+        let dataAnalysis = [];
+        // Deinitialize the data table by tearing it
+        if ($.fn.DataTable.isDataTable("#settleup")) {
+            $('#settleup').DataTable().clear().destroy();
+        } 
+        // Copy the Dues table to avoid corrupting from the above destroy function
+        Dues.forEach((item) => {
+            dataAnalysis.push(item);
+        });
+        // Initialize the DataTable
+        $('#settleup').DataTable( {
+            data: dataAnalysis,
+            columns: [
+                {title: "Debitor"},
+                {title: "Creditor"},
+                {title: "Amount ($)"}
+            ]
+        });
     }
 
 });
